@@ -1,0 +1,190 @@
+# A. Description
+#    A list of commands here configures AFE and generates both edge detected interrupt.
+#
+# B. Preparation
+#    Supply reference and source signal to specific port by a suitable instrument.
+#
+# C. Prerequisite Example (abov_example_config.h)
+#    1. AFE 
+#    2. Timer1
+#    3. PCU/GPIO
+#
+# D. Default Port
+#    1. AFE0    : PA0 (AO0)
+#               : PA1 (AIN0)
+#               : PA2 (AIP0)
+#    2. Timer10 : PA4 (Output)
+#
+# E. Port Connection
+#    1. PA4 (Timer10 Output) ----> PA2 (AIP0)
+#
+# For more information, read a user's manual of the target device carefully.
+#
+# AFE0
+# 1. Config                    : [ 0 i b n 0 ]
+#    Operation                 : i (Interrupt)
+#    Mode                      : c (Comparator)
+#      Trigger Mode            : b (Both Edge)
+#      Output Signal Invert    : n (Not Invert) 
+#      Debounce Value          : 0 (Disable)
+#
+# Timer10
+# 1. Channel                   : 0 (Timer10)
+#
+# 2. Clock                     : [ 0 m h 10 1000 ]
+#    Source                    : m (MCCR : Misc Clock)
+#    MCCR Source               : h (HSI : High Speed Internal Clock - 32MHz)
+#    Source Divide             : 10 
+#    Timer1 Pre-Divide         : 1000 (MCCR Clock / 10) / 1000
+#
+# 3. Config                    : [ 0 i p h 3200 3200 -io o ]
+#    Operation                 : i (Interrupt)
+#    Mode                      : p (Period)
+#    Output Port Polarity      : h (High)
+#    A Data                    : 3200
+#    B Data                    : 3200
+#    Port In/Out (-io)         : o (Output)
+#
+# PCU (PAx)
+# 1. Port Group                : 0 (PCU Port A)
+#
+# 2. Port                      : [ 0 0 a 7 ] [ 0 1 a 7 ] [ 0 2 a 7 ] [ 0 4 a 1 ]
+#    Pin Number                : 0 / 1 / 2 / 4
+#    Pin Mode                  : a (Alternative)
+#    Alternative               : 7 (AO0) / 7 (AIN0) / 7 (AIP0) / 1 (T0IO)
+#
+
+# PCU (PAx)
+send ""
+
+send "cm pcu"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+send "port 0 0 a 7"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+send "port 0 1 a 7"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+send "port 0 2 a 7"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+send "port 0 4 a 7"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+
+# Timer10
+send "cm timer1"
+expect {
+    "<TIMER1> # "
+    break
+    timeout 5 goto end
+}
+
+send "uninit 0"
+expect {
+    "<TIMER1> # "
+    break
+    timeout 5 goto end
+}
+
+send "init 0"
+expect {
+    "<TIMER1> # "
+    break
+    timeout 5 goto end
+}
+
+send "clk 0 m h 10 1000"
+expect {
+    "<TIMER1> # "
+    break
+    timeout 5 goto end
+}
+
+send "config 0 i p h 3200 3200 -io o"
+expect {
+    "<TIMER1> # "
+    break
+    timeout 5 goto end
+}
+
+send "log off"
+expect {
+    "<TIMER1> # "
+    break
+    timeout 5 goto end
+}
+
+send "start 0"
+expect {
+    "<TIMER1> # "
+    break
+    timeout 5 goto end
+}
+
+
+# AFE0
+send "cm afe"
+expect {
+    "<AFE> # "
+    break
+    timeout 5 goto end
+}
+
+send "uninit 0"
+expect {
+    "<AFE> # "
+    break
+    timeout 5 goto end
+}
+
+send "init 0"
+expect {
+    "<AFE> # "
+    break
+    timeout 5 goto end
+}
+
+send "config 0 i c b n 0"
+expect {
+    "<AFE> # "
+    break
+    timeout 5 goto end
+}
+
+send "log on 0"
+expect {
+    "<AFE> # "
+    break
+    timeout 5 goto end
+}
+
+send "start 0"
+expect {
+    "<AFE> # "
+    break
+    timeout 5 goto end
+}
+
+end:

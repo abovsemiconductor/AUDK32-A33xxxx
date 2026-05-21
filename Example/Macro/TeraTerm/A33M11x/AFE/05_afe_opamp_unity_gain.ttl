@@ -1,0 +1,69 @@
+; A. Description
+;    A list of commands here configures AFE and Unity Gain mode.
+;
+; B. Preparation
+;    Supply power to input port by a suitable instrument or make a environment to generate 1V.
+;
+; C. Prerequisite Example (abov_example_config.h)
+;    1. AFE 
+;    3. PCU/GPIO
+;
+; D. Default Port
+;    1. AFE0    : PA7 (AO1)
+;               : PA6 (AIN1)
+;               : PA3 (AIP1)
+;
+; E. Port Connection
+;    1. Supply Power + ----> PA3 (AIP1)
+;       PA7(AO1) ----------> PA6 (AIN1)
+;
+; F. Circuit Configuration
+;                                       
+;                   -----------------
+;                   |               |
+;                   |     | \       |
+;                   ------|- \      |
+;                         |   --------- Vout
+;         Vin ------------|+ /
+;                         | /
+;
+;               < Unity Gain Amplifier >
+;
+; For more information, read a user's manual of the target device carefully.
+;
+; AFE1
+; 1. Config                    : [ 1 i g ]
+;    Operation                 : i (Any operation can be possible.)
+;    Mode                      : g (Unity Gain)
+;
+; PCU (PAx)
+; 1. Port Group                : 0 (PCU Port A)
+;
+; 2. Port                      : [ 0 3 a 7 ] [ 0 6 a 7 ] [ 0 7 a 7 ]
+;    Pin Number                : 3 / 6 / 7
+;    Pin Mode                  : a (Alternative)
+;    Alternative               : 7 (AIP1) / 7 (AIN1) / 7 (AO1)
+;
+
+; PCU (PAx)
+sendln 'cm pcu'
+mpause 30
+sendln 'port 0 3 a 7'
+mpause 30
+sendln 'port 0 6 a 7'
+mpause 30
+sendln 'port 0 7 a 7'
+mpause 30
+
+; AFE0
+sendln 'cm afe'
+mpause 30
+sendln 'uninit 1'
+mpause 30
+sendln 'init 1'
+mpause 30
+sendln 'config 1 i g'
+mpause 30
+sendln 'log on 1'
+mpause 30
+sendln 'start 1'

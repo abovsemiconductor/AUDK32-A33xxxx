@@ -1,0 +1,120 @@
+; A. Description
+;    A list of commands here configures FMC and dual bank.
+;
+; B. Preparation
+;    Setup ARM debugger to connect device without reset to see registers and flash memory
+;
+; C. Prerequisite Example (abov_example_config.h)
+;    1. Flash
+;
+; For more information, read a user's manual of the target device carefully.
+;
+; 1. Code Flash Size : 0x20000(MP)/0x40000(MP)/0x60000(MP)
+;    0x20000 is taken as flash size to test
+; 2. Data Flash Size : 0x8000
+; 3. Code Write Protection Size : 0x10000
+; 4. Data Write Protection Size : 0x2000
+; 5. Erase Mode
+;    - FMC_CHIP_ERASE_MODE = 0
+;    - FMC_PAGE_ERASE_MODE = 1
+;    - FMC_1KB_ERASE_MODE  = 2
+;    - FMC_2KB_ERASE_MODE  = 4
+;    - FMC_4KB_ERASE_MODE  = 8
+;    FMC_1KB_ERASE_MODE is taken to test code flash.
+;    FMC_1KB_ERASE_MODE is taken to test data flash.
+
+;;;;;;;;;;;;;;;;;;;;;;    Define Variables ;;;;;;;;;;;;;;;;;;;;;
+FMC_ID_CFMC = 0
+FMC_ID_DFMC = 1
+
+FMC_CHIP_ERASE_MODE = 0
+FMC_PAGE_ERASE_MODE = 1
+FMC_1KB_ERASE_MODE  = 2
+FMC_2KB_ERASE_MODE  = 4
+FMC_4KB_ERASE_MODE  = 8
+
+CODE_FLASH_SIZE  = 131072
+CODE_SECTOR_4KB  = 4096
+DATA_FLASH_SIZE  = 32768
+DATA_SECTOR_2KB  = 2048
+
+CODE_START_TEST_ADR = CODE_FLASH_SIZE - CODE_SECTOR_4KB
+DATA_START_TEST_ADR = DATA_FLASH_SIZE - DATA_SECTOR_2KB
+SIZE_1KB  = 1024
+SIZE_256B = 256
+
+; 0x0F000000 = 251658240
+DATA_START_PHY_ADR = 251658240 + DATA_START_TEST_ADR
+DUMP_ADDR = CODE_START_TEST_ADR
+DUMP_LEN = DATA_SECTOR_2KB
+DUMP_PAUSE = 5
+DISP_MESSAGE = ""
+;;;;;;;;;;;;;;  Test commands here for Code Flash ;;;;;;;;;;;;;
+sendln 'rmem 0x40000154 1'
+mpause 40
+sendln 'rmem 0x00400000 8'
+mpause 200
+
+sendln 'cm fmc'
+mpause 40
+
+; Print flash geometric information
+sprintf2 DISP_MESSAGE "01.Print flash geometric information"
+call display_message
+sendln 'info'
+pause 3
+
+; Unprotect all code flash area
+sprintf2 DISP_MESSAGE "02.Unprotect all code/data flash area"
+call display_message
+sprintf2 cmd "wprot %d 0xFFFFFFFF 0 0" FMC_ID_CFMC
+sendln cmd
+mpause 40
+
+sprintf2 cmd "wprot %d 0xFFFFFFFF 0 0" FMC_ID_DFMC
+sendln cmd
+pause 3
+
+
+; Erase 4KB at CODE FLASH_SIZE
+sprintf2 DISP_MESSAGE "03.Set Swap Bank0 (BOOT0)" 
+call display_message
+pause 3
+
+sprintf2 cmd "bbank 1" 
+sendln cmd
+mpause 40
+
+sprintf2 cmd "cm scu"
+sendln cmd
+mpause 40
+
+sprintf2 cmd "rsten s e"
+sendln cmd
+mpause 40
+
+sprintf2 cmd "reset"
+sendln cmd
+pause 2
+
+sendln 'rmem 0x40000154 1'
+mpause 40
+sendln 'rmem 0x00400000 8'
+mpause 200
+
+sprintf2 DISP_MESSAGE "End of 2. Flash Bank Swap Test."
+call display_message
+
+goto finish
+
+return
+
+; Dispaly message
+:display_message
+    sprintf2 dstr '        %s' DISP_MESSAGE
+    dispstr 10 10 dstr
+    send 10
+    mpause 30
+    return
+
+:finish

@@ -1,0 +1,253 @@
+# A. Description
+#    A list of commands here configures SPI module and receives data via SPI.
+#
+# B. Preparation
+#    Connecting ports with an external SPI device should be correct.
+#
+# C. Prerequisite Example (abov_example_config.h)
+#    1. SPI
+#    2. PCU/GPIO
+#
+# D. Default Port
+#    1. SPI0    : PB10 (Slave Select)
+#               : PB11 (Serial Clock)
+#               : PB12 (Master Out Slave In)
+#               : PB13 (Master In Slave Out)
+#    2. SPI1    : PD8 (Slave Select)
+#               : PD9 (Serial Clock)
+#               : PD10 (Master Out Slave In)
+#               : PD11 (Master In Slave Out)
+#
+# E. Port Connection
+#    1. PB10 (Slave Select)        <----> PD8 (Slave Select)
+#    2. PB11 (Serial Clock)        <----> PD9 (Serial Clock)
+#    3. PB12 (Master Out Slave In) <----> PD10 (Master Out Slave In)
+#    4. PB13 (Master In Slave Out) <----> PD11 (Master In Slave Out)
+#
+# For more information, read a user's manual of the target device carefully.
+#
+# SPI0
+# 1. Channel                   : 0 (SPI0)
+#
+# 2. Config                    : [ 0 i s 8 0 m h 21 -delay 1 1 1 ]
+#    Operation                 : i (Interrupt)
+#    Mode                      : s (Slave)
+#    Data Length               : 8 (8bit)
+#    Polarity/Phase            : 0 (Polarity : Low, Phase : Low)
+#    Bit Order                 : m (MSB)
+#    Slave Select Pin Polarity : h (High)
+#    Baudrate                  : 21 (PCLK / (Baudrate + 1))
+#    Delay Start               : 1
+#    Delay Stop                : 1
+#    Delay Burst               : 1
+#
+# 3. Rx                        : [ 0 8 ]
+#    Receive Data Length       : 8
+#
+# SPI1
+# 1. Channel                   : 1 (SPI1)
+#
+# 2. Config                    : [ 1 i m 8 0 m h 21 -delay 1 1 1 ]
+#    Operation                 : i (Interrupt)
+#    Mode                      : m (Master)
+#    Data Length               : 8 (8bit)
+#    Polarity/Phase            : 0 (Polarity : Low, Phase : Low)
+#    Bit Order                 : m (MSB)
+#    Slave Select Pin Polarity : h (High)
+#    Baudrate                  : 21 (PCLK / (Baudrate + 1))
+#    Delay Start               : 1
+#    Delay Stop                : 1
+#    Delay Burst               : 1
+#
+# 3. Data                      : [ 1 8 0x01 0x02 0x03 0x04 0x05 0x06 0x07 0x09 ]
+#    Data Length               : 8
+#    Data                      : 0x01 ... (Hexa and space (delimitor))
+#
+# 4. Tx                        : [ 1 8 ]
+#    Transmit Data Length      : 8
+#
+# PCU (PBx)
+# 1. Port Group                : 1 (PCU Port B)
+#
+# 2. Port                      : [ 1 10 a 1 ] [ 1 11 a 1 ] [ 1 12 a 1 ] [ 1 13 a 1 ]
+#    Pin Number                : 10 / 11 / 12 / 13
+#    Pin Mode                  : a (Alternative)
+#    Alternative               : 1 (SS0/SCK0/MOSI0/MISO0)
+# 
+# 3. Port                      : [ 1 11 i i ] [ 1 12 i i ]
+#    Pin Number                : 11 / 12
+#    Pin Mode                  : i (Input)
+#    Pin Input Mode            : i (Input)
+# 
+# PCU (PDx)
+# 1. Port Group                : 3 (PCU Port D)
+#
+# 2. Port                      : [ 1 8 a 1 ] [ 1 9 a 1 ] [ 1 10 a 1 ] [ 1 11 a 1 ]
+#    Pin Number                : 8 / 9 / 10 / 11
+#    Pin Mode                  : a (Alternative)
+#    Alternative               : 1 (SS1/SCK1/MOSI1/MISO1)
+# 
+
+# PCU (PBx)
+send ""
+
+send "cm pcu"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+send "port 1 10 a 1"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+send "port 1 11 a 1"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+send "port 1 12 a 1"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+send "port 1 13 a 1"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+send "port 1 11 i i"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+send "port 1 12 i i"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+
+# PCU (PDx)
+send "port 3 8 a 1"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+send "port 3 9 a 1"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+send "port 3 10 a 1"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+send "port 3 11 a 1"
+expect {
+    "<PCU> # "
+    break
+    timeout 5 goto end
+}
+
+
+# SPI0
+send "cm spi"
+expect {
+    "<SPI> # "
+    break
+    timeout 5 goto end
+}
+
+send "uninit 0"
+expect {
+    "<SPI> # "
+    break
+    timeout 5 goto end
+}
+
+send "init 0"
+expect {
+    "<SPI> # "
+    break
+    timeout 5 goto end
+}
+
+send "config 0 i s 8 0 m h 21 -delay 1 1 1"
+expect {
+    "<SPI> # "
+    break
+    timeout 5 goto end
+}
+
+send "rx 0 8"
+expect {
+    "<SPI> # "
+    break
+    timeout 5 goto end
+}
+
+# SPI1
+send "cm spi"
+expect {
+    "<SPI> # "
+    break
+    timeout 5 goto end
+}
+
+send "uninit 1"
+expect {
+    "<SPI> # "
+    break
+    timeout 5 goto end
+}
+
+send "init 1"
+expect {
+    "<SPI> # "
+    break
+    timeout 5 goto end
+}
+
+send "config 1 i m 8 0 m h 21 -delay 1 1 1"
+expect {
+    "<SPI> # "
+    break
+    timeout 5 goto end
+}
+
+send "data 1 8 0xa5 0x5a 0xa5 0x5a 0xff 0x10 0x01 0x55"
+expect {
+    "<SPI> # "
+    break
+    timeout 5 goto end
+}
+
+send "tx 1 8"
+expect {
+    "<SPI> # "
+    break
+    timeout 5 goto end
+}
+
+end:
