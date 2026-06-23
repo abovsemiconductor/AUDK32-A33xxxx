@@ -16,3 +16,6 @@
 [submodule "Tool/OpenOCD"]
 	path = Tool/OpenOCD
 	url = https://github.com/abovsemiconductor/AUDK32-OpenOCD.git/
+[submodule "Platform/OS/FreeRTOS"]
+	path = Platform/OS/FreeRTOS
+	url = https://github.com/FreeRTOS/FreeRTOS-Kernel.git
