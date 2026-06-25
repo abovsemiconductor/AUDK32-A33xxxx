@@ -16,7 +16,7 @@
     <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerExecutable" value="${project_loc}/../../../../../../Tool/OpenOCD/${system_property:osgi.os}/openocd.${system_property:osgi.os}.exe"/>
     <intAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerGdbPortNumber" value="3333"/>
     <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerLog" value=""/>
-    <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerOther" value="-f &quot;${project_loc}/../../../../../../Tool/OpenOCD/share/openocd/scripts/board/abov32/a33xxxx/a33g52x/starterkit-a33g526-rln.cfg&quot;"/>
+    <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerOther" value="-f &quot;${project_loc}/../../../../../../Tool/OpenOCD/share/openocd/scripts/board/abov32/a33xxxx/a33g52x/starterkit-a33g526-rln-a.cfg&quot;"/>
     <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerTclPortNumber" value="6666"/>
     <intAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.gdbServerTelnetPortNumber" value="4444"/>
     <stringAttribute key="ilg.gnumcueclipse.debug.gdbjtag.openocd.otherInitCommands" value=""/>

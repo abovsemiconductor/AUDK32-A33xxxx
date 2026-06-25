@@ -1,0 +1,43 @@
+{
+    "version": 3,
+    "configurePresets": [
+        {
+            "name": "AUDK32",
+            "hidden": true,
+            "binaryDir": "${sourceDir}/build",
+            "generator": "Ninja",
+            "environment": {
+                "PATH": "${sourceDir}/../../../../Tool/Ninja;$penv{PATH}"
+            },
+            "cacheVariables": {
+                "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/../toolchain-gcc.cmake",
+                "PROJECT":"Bare",
+                "PRODUCT":"A33xxxx"
+            }
+        },
+        {
+            "name": "A33G52x",
+            "inherits": "AUDK32",
+            "cacheVariables": {
+                "AUDK32_TARGET": "A33G52x",
+                "TARGET_BOARD":"A33G527-VQN"
+            }
+        },
+        {
+            "name": "A33G53x",
+            "inherits": "AUDK32",
+            "cacheVariables": {
+                "AUDK32_TARGET": "A33G53x",
+                "TARGET_BOARD":"A33G539-VLN"
+            }
+        },
+        {
+            "name": "A33M11x",
+            "inherits": "AUDK32",
+            "cacheVariables": {
+                "AUDK32_TARGET": "A33M11x",
+                "TARGET_BOARD":"A33M116-RLN"
+            }
+        }
+    ]
+}
